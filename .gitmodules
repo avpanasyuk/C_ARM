@@ -1,3 +1,0 @@
-[submodule "General"]
-	path = General
-	url = ssh://git@rmi./~git/AVP_C_LIB.git
