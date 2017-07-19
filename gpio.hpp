@@ -32,24 +32,46 @@ namespace avp {
 #define AVP_PIN(Port,Number)  avp::Pin<uint32_t(COMB2(GPIO,Port)),COMB2(GPIO_PIN_,Number)>
 
 #else
+  ///
+  template<class T, size_t count>
+  class PlacementVector {
+    T Allocation[count];
+
+
+
+  } // PlacementVector;
   /// Pin base class
+  /// we do not want to create each Pin object using new becuase we would have big overhead, let;s try placement "new"
+  /// so we statically allocate an array of "count" Pins, and then fill it
+  template<uint8_t count, uint8_t index>
   class Pin {
     uint32_t GPIOx;
     uint16_t GPIO_Pin;
 
-    Pin(uint32_t GPIOx_, uint16_t GPIO_Pin_uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
+    Pin():GPIOx(0UL) {} // for arrays, 0 is invalid value, we can check for it
+
+    Pin(uint32_t GPIOx_, uint16_t GPIO_Pin_, uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
         uint32_t Speed = GPIO_SPEED_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT):GPIOx(GPIOx_), GPIO_Pin(GPIO_Pin_) {
-     GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
+      GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
       HAL_GPIO_Init((GPIO_TypeDef *)GPIOx,&GPIO_Init);
     } // constructor
-
-
-  }; // Pin_
+}; // Pin_
 
 
 #endif
 
 #if 0
+    Pin(uint32_t GPIOx_, uint16_t GPIO_Pin_, uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
+        uint32_t Speed = GPIO_SPEED_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT):GPIOx(GPIOx_), GPIO_Pin(GPIO_Pin_) {
+      Init(Mode, Pull, Speed, Alternate};
+    } // constructor
+
+    /// In case we mke an array we can not use constructor to set initial values
+    void Init(uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
+                       uint32_t Speed = GPIO_SPEED_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
+      GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
+      HAL_GPIO_Init((GPIO_TypeDef *)GPIOx,&GPIO_Init);
+    } // Init
 
   namespace avp {
     typedef struct  {
