@@ -6,7 +6,6 @@
   @author Alexander Panasyuk
   */
 
-#include <stm32f3xx_hal.h>
 #include <AVP_LIBS/General/Time.h>
 
 namespace avp {
