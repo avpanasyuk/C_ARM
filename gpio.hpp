@@ -5,8 +5,7 @@
 #ifdef HAL_GPIO_LIBRARY
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
-#include <AVP_LIBS/General/Macros.h>
-
+#include <AVP_LIBS/General/Macros.h>
 namespace avp {
 
   struct PinBase {
@@ -32,7 +31,7 @@ namespace avp {
     /*! sets PULLUP when mode is INPUT */
     /* CubeMX does it by itself */
     static void Config(uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
-                       uint32_t Speed = GPIO_SPEED_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
+                       uint32_t Speed = GPIO_SPEED_FREQ_MEDIUM, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
       GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
       HAL_GPIO_Init((GPIO_TypeDef *)GPIOx,&GPIO_Init);
     } // Init
