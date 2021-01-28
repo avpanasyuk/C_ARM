@@ -32,7 +32,7 @@ namespace avp {
     /*! sets PULLUP when mode is INPUT */
     /* CubeMX does it by itself */
     static void Config(uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
-                       uint32_t Speed = GPIO_SPEED_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
+                       uint32_t Speed = GPIO_SPEED_FREQ_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
       GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
       HAL_GPIO_Init((GPIO_TypeDef *)GPIOx,&GPIO_Init);
     } // Init
@@ -44,7 +44,7 @@ namespace avp {
     static void toggle() { HAL_GPIO_TogglePin((GPIO_TypeDef *)GPIOx, GPIO_Pin); }
   }; // Pin
 
-#define AVP_PIN(Port,Number)  avp::Pin<uint32_t(COMB2(GPIO,Port)),COMB2(GPIO_PIN_,Number)>
+#define AVP_PIN(Port,Number)  avp::Pin<uint32_t(COMB2(GPIO,Port##_BASE)),COMB2(GPIO_PIN_,Number)>
 
 #else
 
