@@ -2,6 +2,9 @@
 #define GPIO_HPP_INCLUDED
 
 #include <stdint.h>
+
+#define HAL_GPIO_LIBRARY
+
 #ifdef HAL_GPIO_LIBRARY
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
