@@ -24,6 +24,8 @@ namespace avp {
     virtual void set_low() = 0;
     virtual bool get() = 0;
     virtual void toggle() = 0;
+
+    virtual ~PinBase();
   }; // PinBase
 
 #if defined(HAL_GPIO_LIBRARY)
