@@ -1,10 +1,12 @@
 #ifndef GPIO_HPP_INCLUDED
 #define GPIO_HPP_INCLUDED
 
+/// @cond
 #include <stdint.h>
 #ifdef HAL_GPIO_LIBRARY
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
+/// @endcond
 #include <AVP_LIBS/General/Macros.h>
 
 namespace avp {
