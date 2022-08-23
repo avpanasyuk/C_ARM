@@ -2,7 +2,7 @@
  * MAX30102.hpp
  *
  *  Created on: Apr 21, 2022
- *      Author: panasyuk
+ *      Author: panasyuk 
  */
 
 #ifndef INCLUDE_AVP_LIBS_ARM_HPP_
