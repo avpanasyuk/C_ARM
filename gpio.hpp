@@ -10,7 +10,7 @@
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
 /// @endcond
-#include "../C_General/Macros.h"
+#include "AVP_LIBS/General/Macros.h"
 
 namespace avp {
 
