@@ -7,6 +7,7 @@
 #define HAL_GPIO_LIBRARY
 
 #ifdef HAL_GPIO_LIBRARY
+#include <stm32f3xx_hal_gpio.h>
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
 /// @endcond
@@ -34,6 +35,9 @@ namespace avp {
   enum PinMode {INPUT, OUTPUT};
   enum PinLevel {LOW, HIGH};
 
+  /**
+    Usage: avp::Pin<GPIOE_BASE,LD4_Pin>::toggle();
+  */
   template<uint32_t GPIOx, uint16_t GPIO_Pin>
   struct Pin {
     /*! sets PULLUP when mode is INPUT */
@@ -41,7 +45,7 @@ namespace avp {
     static void Config(uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
                        uint32_t Speed = GPIO_SPEED_FREQ_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
       GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
-      HAL_GPIO_Init((GPIO_TypeDef *)GPIOx,&GPIO_Init);
+      HAL_GPIO_Init(GPIOx,&GPIO_Init);
     } // Init
     // static constexpr char *Name() { return (const char *)PortName; }
     static void set(bool value) { HAL_GPIO_WritePin((GPIO_TypeDef *)GPIOx, GPIO_Pin, value?GPIO_PIN_SET:GPIO_PIN_RESET); }
