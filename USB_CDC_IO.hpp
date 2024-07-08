@@ -31,6 +31,8 @@ namespace avp {
 
     static inline void TryToSend() {
       // FIXME: should there be a mutex for pBlockBeingSent
+      if(pBlockBeingSent == nullptr)
+        pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
       if(pBlockBeingSent != nullptr) {
         if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK)
            pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
@@ -42,7 +44,7 @@ namespace avp {
     static void RX_Byte_IT() {};
     static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
       pStoreReceivedByte = pStoreReceivedByte_;
-      pGetBlockToSend = pGetBlockToSend;
+      pGetBlockToSend = pGetBlockToSend_;
     } // SetCallBacks
   }; // class USB_CDC_IO
 } // namespace avp
