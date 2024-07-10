@@ -1,8 +1,6 @@
 #ifndef USB_CDC_IO_HPP_INCLUDED
 #define USB_CDC_IO_HPP_INCLUDED
 
-#include <usbd_cdc_if.h>
-
 /**
   Used for "Port" class, so
      -# should be static
@@ -19,38 +17,17 @@
       -# HW_IO_ should call StoreReceivedByte supplied to it by SetCallBacks call when it received a byte
       -# HW_IO_ should call GetBlockToSend when it is ready to send new data
 */
-#ifdef __cplusplus
 #include "../C_General/IO.h"
 
 namespace avp {
   struct USB_CDC_IO {
-    static const uint8_t *pBlockBeingSent;
-    static size_t LengthOfBlockBeingSent;
-    static tStoreReceivedByte pStoreReceivedByte;
-    static tGetBlockToSend pGetBlockToSend;
-
-    static inline void TryToSend() {
-      // FIXME: should there be a mutex for pBlockBeingSent
-      if(pBlockBeingSent == nullptr)
-        pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
-      if(pBlockBeingSent != nullptr) {
-        if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK)
-           pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
-      }
-    } // TryToSend
+    static void TryToSend();
 
     static const char *GetError() { return nullptr; }
-    static void FlushRX() {};
+    static void FlushRX();
     static void RX_Byte_IT() {};
-    static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
-      pStoreReceivedByte = pStoreReceivedByte_;
-      pGetBlockToSend = pGetBlockToSend_;
-    } // SetCallBacks
+    static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_);
   }; // class USB_CDC_IO
 } // namespace avp
-
-extern "C"
-#endif
-void avp_USB_CDC_IO_ReceivedBlock(uint8_t* Buf, uint32_t *Len);
 
 #endif /* USB_CDC_IO_HPP_INCLUDED */
