@@ -22,6 +22,8 @@
 #ifdef __cplusplus
 #include "../C_General/IO.h"
 
+// extern "C" int _write(int file, char *ptr, int len);
+
 namespace avp {
   struct USB_CDC_IO {
     static const uint8_t *pBlockBeingSent;
@@ -34,8 +36,10 @@ namespace avp {
       if(pBlockBeingSent == nullptr)
         pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
       if(pBlockBeingSent != nullptr) {
-        if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK)
+        if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK) {
+           // _write(0, (char *)pBlockBeingSent, LengthOfBlockBeingSent);
            pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
+        }
       }
     } // TryToSend
 
