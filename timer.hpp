@@ -10,6 +10,10 @@ extern uint32_t SystemClockHz; // usually determined in setup.cpp  as HAL_RCC_Ge
 namespace avp {
   extern Chain TimerChain;
 
+/**
+this is a service class which allows tro link all the "Timer"s in a chain, so interrupt handler can
+go through it and find callbacks.
+*/
   struct TimerLink: public Chain::Link {
     TimerLink(TIM_HandleTypeDef *htim_, void (*fCallBack_)()):
       Chain::Link(&TimerChain), htim(htim_), fCallBack(fCallBack_) {
@@ -25,11 +29,14 @@ namespace avp {
 
   };
 
+/**
+This is purely static class, no instances are required
+*/
   template<TIM_HandleTypeDef *htim, void (*fCallBack)()>
   struct Timer {
     static TimerLink Link;
 
-    static void SetInterval(uint64_t Interval_us) {
+    static void SetInterval_us(uint64_t Interval_us) {
       uint32_t Clocks = Interval_us*SystemClockHz/1000000UL;
       uint16_t Sqrt = avp::IntSqrt<uint16_t, uint32_t>(Clocks);
 
