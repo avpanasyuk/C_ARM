@@ -36,13 +36,13 @@ This is purely static class, no instances are required
 
       htim->Init.Prescaler = Sqrt - 1;
       htim->Init.Period = Clocks/Sqrt - 1;
-      AVP_ASSERT(HAL_TIM_Base_Init(htim) == HAL_OK);
+      AVP_HAL_ASSERT(htim, HAL_TIM_Base_Init(htim));
 
       if(TimerChain.FindFirst(htim) == nullptr) TimerChain.Append(&Link);
     } // SetInterval
 
     static void Start() {
-     AVP_HAL_ASSERT(htim, HAL_TIM_Base_Start(htim));
+     AVP_HAL_ASSERT(htim, HAL_TIM_Base_Start_IT(htim));
     } // Start
 
     static void Stop() {
