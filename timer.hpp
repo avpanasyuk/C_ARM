@@ -4,6 +4,7 @@
 // #include "Error.h"
 #include "../C_General/Chain.h"
 #include "../C_General/MyMath.h"
+#include "../C_ARM/Error.h"
 
 extern uint32_t SystemClockHz; // usually determined in setup.cpp  as HAL_RCC_GetSysClockFreq();
 
@@ -41,11 +42,11 @@ This is purely static class, no instances are required
     } // SetInterval
 
     static void Start() {
-     AVP_ASSERT(HAL_TIM_Base_Start(htim) == HAL_OK);
+     AVP_HAL_ASSERT(htim, HAL_TIM_Base_Start(htim));
     } // Start
 
     static void Stop() {
-     AVP_ASSERT(HAL_TIM_Base_Stop(htim) == HAL_OK);
+     AVP_HAL_ASSERT(htim, HAL_TIM_Base_Stop(htim));
     } // Start
   }; // class Timer
 

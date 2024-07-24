@@ -35,9 +35,7 @@ namespace avp {
                void (*pErrorCallback_)(uint32_t),
                void (*pRX_Callback_)()):
       tUART_Chain::Link(puart, &UART_for_Port_Chain),
-      pStartNewTX(pStartNewTX_), pErrorCallback(pErrorCallback_), pRX_Callback(pRX_Callback_) {
-        DEBUG_OUT;
-    }
+      pStartNewTX(pStartNewTX_), pErrorCallback(pErrorCallback_), pRX_Callback(pRX_Callback_) {}
   }; // struct UART_Link
 
 #define T template<UART_HandleTypeDef *puart>
