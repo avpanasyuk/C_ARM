@@ -21,20 +21,22 @@
 // #include "err_codes.h"
 
 namespace avp {
-  extern ChainByPointer UART_for_Port_Chain; //!< chain which allows to find callbacks from huart
+  typedef ChainByKey<UART_HandleTypeDef *> tUART_Chain;
 
-  struct tUART_Link: public ChainByPointer::Link {
+  extern tUART_Chain UART_for_Port_Chain; //!< chain which allows to find callbacks from huart
+
+  struct tUART_Link: public tUART_Chain::Link {
     void (*pStartNewTX)();
     void (*pErrorCallback)(uint32_t);
     void (*pRX_Callback)();
-    static tUART_for_Port_Chain *GetChainP();
 
     tUART_Link(UART_HandleTypeDef *puart,
                void (*pStartNewTX_)(),
                void (*pErrorCallback_)(uint32_t),
                void (*pRX_Callback_)()):
-      ChainByPointer::Link(puart, &UART_for_Port_Chain),
+      tUART_Chain::Link(puart, &UART_for_Port_Chain),
       pStartNewTX(pStartNewTX_), pErrorCallback(pErrorCallback_), pRX_Callback(pRX_Callback_) {
+        DEBUG_OUT;
     }
   }; // struct UART_Link
 
@@ -72,6 +74,8 @@ namespace avp {
     static void Init(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
       pStoreReceivedByte = pStoreReceivedByte_;
       pGetBlockToSend = pGetBlockToSend_;
+      if(UART_for_Port_Chain.FindFirst(puart) == nullptr) UART_for_Port_Chain.Append(&UART_Link); // FIXME - static constructor is not called for some reason
+      RX_Byte_IT();
     } // Init
 
 
@@ -144,6 +148,11 @@ namespace avp {
       RX_Byte_IT();
     } // RX_Callback
 
+    static void ErrorCallback(uint32_t ErrorCode) { // we recover from the error in Protocol::cycle
+      InError = true;
+      snprintf(ErrStr,ERR_STR_MAX_SZ,"UART error code = %lu\n", ErrorCode);
+    } // ErrorCallback
+
     static const char *GetError() {
       if(InError) {
         InError = false;
@@ -152,16 +161,12 @@ namespace avp {
     } // GetError
 
     static void FlushRX() {} // RX is interrupt driven, nothing to flush
-    static void ErrorCallback(uint32_t ErrorCode) { // we recover from the error in Protocol::cycle
-      InError = true;
-      snprintf(ErrStr,ERR_STR_MAX_SZ,"UART error code = %lu\n", ErrorCode);
-    } // ErrorCallback
   }; // UART_for_Port
 
 
 #define U UART_for_Port<puart>
 
-  T tUART_Link U::UART_Link = {puart, U::TX_Done, U::GetError, U::RX_Callback};
+  T tUART_Link U::UART_Link(puart, U::TX_Done, U::ErrorCallback, U::RX_Callback);
 
   T tStoreReceivedByte U::pStoreReceivedByte;
   T tGetBlockToSend U::pGetBlockToSend;

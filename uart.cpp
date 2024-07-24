@@ -7,7 +7,7 @@
 
 using namespace avp;
 
-ChainByPointer avp::UART_for_Port_Chain;
+tUART_Chain avp::UART_for_Port_Chain;
 
 /// @brief called by interrupt handler when DMA transfer is completed and HAL_DMA_STATE_READY is set
 ///

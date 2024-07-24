@@ -8,15 +8,16 @@
 extern uint32_t SystemClockHz; // usually determined in setup.cpp  as HAL_RCC_GetSysClockFreq();
 
 namespace avp {
-  extern ChainByPointer TimerChain;
+  typedef ChainByKey<TIM_HandleTypeDef *> tTimerChain;
+  extern tTimerChain TimerChain;
 
 /**
 this is a service class which allows tro link all the "Timer"s in a chain, so interrupt handler can
 go through it and find callbacks.
 */
-  struct TimerLink: public ChainByPointer::Link {
+  struct TimerLink: public tTimerChain::Link {
     TimerLink(TIM_HandleTypeDef *htim_, void (*fCallBack_)()):
-      ChainByPointer::Link(htim_, &TimerChain), fCallBack(fCallBack_) {
+      tTimerChain::Link(htim_, &TimerChain), fCallBack(fCallBack_) {
     }
     void (*fCallBack)();
   };
@@ -35,6 +36,8 @@ This is purely static class, no instances are required
       htim->Init.Prescaler = Sqrt - 1;
       htim->Init.Period = Clocks/Sqrt - 1;
       AVP_ASSERT(HAL_TIM_Base_Init(htim) == HAL_OK);
+
+      if(TimerChain.FindFirst(htim) == nullptr) TimerChain.Append(&Link);
     } // SetInterval
 
     static void Start() {
