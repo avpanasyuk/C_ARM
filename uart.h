@@ -27,6 +27,8 @@ namespace avp {
     void (*pStartNewTX)();
     void (*pErrorCallback)(uint32_t);
     void (*pRX_Callback)();
+    static tUART_for_Port_Chain *GetChainP();
+
     tUART_Link(UART_HandleTypeDef *puart,
                void (*pStartNewTX_)(),
                void (*pErrorCallback_)(uint32_t),
@@ -42,9 +44,9 @@ namespace avp {
    protected:
     static tUART_Link UART_Link;
     static tStoreReceivedByte pStoreReceivedByte; ///< pointer to callback function which
-    /// have to be specifies using SetCallBacks function
+    /// have to be specifies using Init function
     static tGetBlockToSend pGetBlockToSend; ///< pointer to callback function which
-    /// have to be specifies using SetCallBacks function
+    /// have to be specifies using Init function
     static uint8_t NewByte;
     static bool TX_in_Progress; ///< mutex, does not allow to HAL_UART_Transmit_DMA twice
     // I do not want to rely on internal HAL_UART_Transmit_DMA mutex, because we are calling
@@ -67,11 +69,10 @@ namespace avp {
     } // RX_Byte_IT
 
    public:
-    static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
+    static void Init(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
       pStoreReceivedByte = pStoreReceivedByte_;
       pGetBlockToSend = pGetBlockToSend_;
-      RX_Byte_IT();
-    } // SetCallBacks
+    } // Init
 
 
     /**
