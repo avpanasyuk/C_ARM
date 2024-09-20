@@ -3,9 +3,6 @@
 
 /// @cond
 #include <stdint.h>
-
-#define HAL_GPIO_LIBRARY
-
 #ifdef HAL_GPIO_LIBRARY
 #include <stm32f3xx_hal_def.h>
 #include <stm32f3xx_hal_gpio.h>
