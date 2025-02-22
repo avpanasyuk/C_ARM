@@ -3,6 +3,7 @@
   @author Alexander Panasyuk
   */
 
+#include "../C_ARM/STM32F.hpp"
 #include "uart.h"
 
 using namespace avp;

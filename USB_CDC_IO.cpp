@@ -1,5 +1,6 @@
 #include "../C_General/Error.h"
-#include "../C_ARM/USB_CDC_IO.hpp"
+#include "STM32F.hpp"
+#include "USB_CDC_IO.hpp"
 
 const uint8_t *avp::USB_CDC_IO::pBlockBeingSent = nullptr;
 size_t avp::USB_CDC_IO::LengthOfBlockBeingSent = 0;
