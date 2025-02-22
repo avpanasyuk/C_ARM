@@ -3,22 +3,19 @@
 
 #include <usbd_cdc_if.h>
 
+
 /**
  * @warning: function CDC_Receive_FS in file "USB_DEVICE\App\usbd_cdc_if.c" should be modified to include
  * call to avp_USB_CDC_IO_ReceivedBlock function:
  @code
- /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION /
 void avp_USB_CDC_IO_ReceivedBlock(uint8_t* Buf, uint32_t *Len);
-/* USER CODE END PRIVATE_FUNCTIONS_DECLARATION /
 // ......................... part of file ..................
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
-  /* USER CODE BEGIN 6 /
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   avp_USB_CDC_IO_ReceivedBlock(Buf,Len);
   return (USBD_OK);
-  /* USER CODE END 6 /
 }
   @endcode
 
