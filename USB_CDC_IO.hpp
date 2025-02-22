@@ -4,6 +4,24 @@
 #include <usbd_cdc_if.h>
 
 /**
+ * @warning: function CDC_Receive_FS in file "USB_DEVICE\App\usbd_cdc_if.c" should be modified to include
+ * call to avp_USB_CDC_IO_ReceivedBlock function:
+ @code
+ /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION /
+void avp_USB_CDC_IO_ReceivedBlock(uint8_t* Buf, uint32_t *Len);
+/* USER CODE END PRIVATE_FUNCTIONS_DECLARATION /
+// ......................... part of file ..................
+static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
+{
+  /* USER CODE BEGIN 6 /
+  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+  USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  avp_USB_CDC_IO_ReceivedBlock(Buf,Len);
+  return (USBD_OK);
+  /* USER CODE END 6 /
+}
+  @endcode
+
   Used for "Port" class, so
      -# should be static
       -# static void TryToSend(); - this class calls it to let HW_IO_ know that there are
@@ -19,7 +37,8 @@
       -# HW_IO_ should call StoreReceivedByte supplied to it by SetCallBacks call when it received a byte
       -# HW_IO_ should call GetBlockToSend when it is ready to send new data
 */
-#ifdef __cplusplus
+#ifdef __cplusplus
+
 #include "../C_General/IO.h"
 
 // extern "C" int _write(int file, char *ptr, int len);
@@ -37,8 +56,8 @@ namespace avp {
         pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
       if(pBlockBeingSent != nullptr) {
         if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK) {
-           // _write(0, (char *)pBlockBeingSent, LengthOfBlockBeingSent);
-           pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
+          // _write(0, (char *)pBlockBeingSent, LengthOfBlockBeingSent);
+          pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
         }
       }
     } // TryToSend
