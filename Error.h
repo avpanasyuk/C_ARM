@@ -15,3 +15,21 @@ if(s != HAL_OK) {\
 printf_fun("HAL error in %s: %hu, code: %lu on line %d\n", \
             __PRETTY_FUNCTION__, s, h.ErrorCode, __LINE__);
 
+
+/**
+ * returns HAL_StatusTypeDef
+ */
+#define IF_HAL_ERROR_PRINTF_RETURN(h, exp, printf_fun) do {\
+HAL_StatusTypeDef s = (exp);\
+if(s != HAL_OK) {\
+  printf_fun("HAL error in %s: %hu, code: %lu on line %d\n", \
+            __PRETTY_FUNCTION__, s, h.ErrorCode, __LINE__); \
+            return s; }}while(0)
+
+/**
+ * returns HAL_StatusTypeDef
+ */
+#define IF_HAL_ERROR_DEBUG_RETURN(h, exp) IF_HAL_ERROR_PRINTF_RETURN(h,exp, debug_printf)
+
+
+
