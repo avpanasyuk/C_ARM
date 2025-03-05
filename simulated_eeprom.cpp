@@ -54,6 +54,7 @@ namespace flash {
 
 void StoredInEEPROM::Write() {
   AVP_ASSERT(DataSize() <= eeprom_size);
+  AVP_ASSERT(FLASH_SECTOR_SIZE != eeprom_size); // modify flash::erase_sector to erase more
   AVP_ASSERT(HAL_FLASH_Unlock() == HAL_OK);
   flash::erase_sector((uint32_t)eeprom_start);
   uint32_t count = avp::CeilRatio(DataSize(), sizeof(uint32_t));

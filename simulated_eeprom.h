@@ -20,27 +20,16 @@ _eeprom_start = ORIGIN(EEPROM);
 _eeprom_size  = LENGTH(EEPROM);
 */
 
-#include "stm32f3xx_hal.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-namespace flash {
-  void erase_sector(uint32_t sector);
-  void write(uint32_t* addr, uint32_t data);
+void EEPROM_Write(const uint32_t *pDWORD, uint32_t nDWORDs);
+bool EEPROM_Read(uint32_t *pDWORD, uint32_t nDWORDs);
 
-//  uint32_t flash_read(uint32_t* addr) {
-//    return *addr;
-//  }
-} // namespace flash
+#ifdef __cplusplus
+}
+#endif
 
-/**
- * abstract class, should be inherited by a single variable stored in the EEPROM
- * @note Data should be aligned to uint32 either by using union or alignas(4) (since c++11)
- */
-struct StoredInEEPROM {
-  StoredInEEPROM() { Read(); }
-  virtual uint32_t DataSize() = 0;
-  virtual uint32_t *DataStart() = 0; // Data should be aligned
-  void Write();
-  void Read();
-}; //  StoredInEEPROM
 
 
