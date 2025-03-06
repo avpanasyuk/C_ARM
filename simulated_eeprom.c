@@ -33,7 +33,7 @@ uint32_t flash_size = (uint32_t)&_flash_size;
 uint32_t *eeprom_start = &_eeprom_start;
 uint32_t eeprom_size = (uint32_t)&_eeprom_size; // the same size as FLASH page, code has to be modified if need more
 
-static void flash_erase_page(uint32_t page, uint32_t Npages = 1) {
+static void flash_erase_page(uint32_t page, uint32_t Npages) {
   FLASH_EraseInitTypeDef eraseInit = { FLASH_TYPEERASE_PAGES, page, Npages };
   uint32_t pageError;
   AVP_ASSERT(HAL_FLASHEx_Erase(&eraseInit, &pageError) == HAL_OK);
@@ -56,11 +56,11 @@ void EEPROM_Write(const uint32_t *p, uint32_t Nbytes) {
   AVP_ASSERT(Nbytes + sizeof(uint32_t) <= eeprom_size); // another DWORD for CRC
   AVP_ASSERT(HAL_FLASH_Unlock() == HAL_OK);
   flash_erase_page((uint32_t)eeprom_start, CEIL_RATIO(Nbytes + sizeof(uint32_t), FLASH_PAGE_SIZE));
-  uint32_t CRC = Crc16((const uint8_t *)p, Nbytes,0);
+  uint32_t CRC_val = Crc16((const uint8_t *)p, Nbytes,0);
   uint32_t *p_eeprom = eeprom_start;
   uint32_t count = Nbytes/sizeof(uint32_t);
   while(count--) flash_write(p_eeprom++, *(p++));
-  flash_write(p_eeprom, CRC);
+  flash_write(p_eeprom, CRC_val);
   AVP_ASSERT(HAL_FLASH_Lock() == HAL_OK);
 } // StoredInEEPROM::Write
 
@@ -69,16 +69,17 @@ void EEPROM_Write(const uint32_t *p, uint32_t Nbytes) {
  * is written to *p
  * @param p should point to aligned variable, used union, __attribute__((aligned(x))) or better alignas(x)
  * @param Nbytes:The sizeof of such structure is always divisible by 4
+ * @retval Error string or NULL if no error
  */
-bool EEPROM_Read(uint32_t *p, uint32_t Nbytes) {
+const char *EEPROM_Read(uint32_t *p, uint32_t Nbytes) {
   AVP_ASSERT(Nbytes % sizeof(uint32_t) == 0);
   AVP_ASSERT(Nbytes + sizeof(uint32_t) <= eeprom_size); // another DWORD for CRC
-  uint32_t CRC = Crc16((const uint8_t *)eeprom_start, Nbytes, 0);
+  uint32_t CRC_val = Crc16((const uint8_t *)eeprom_start, Nbytes, 0);
   uint32_t count = Nbytes/sizeof(uint32_t);
-  if(CRC != *(eeprom_start + count)) return false;
+  if(CRC_val != *(eeprom_start + count)) return "Bad CRC!";
 
   uint32_t *p_eeprom = eeprom_start;
   while(count--) *(p++) = *(p_eeprom++);
-  return true;
+  return NULL;
 } // StoredInEEPROM::Read
 

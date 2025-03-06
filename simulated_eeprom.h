@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 void EEPROM_Write(const uint32_t *pDWORD, uint32_t nDWORDs);
-bool EEPROM_Read(uint32_t *pDWORD, uint32_t nDWORDs);
+const char *EEPROM_Read(uint32_t *pDWORD, uint32_t nDWORDs);
 
 #ifdef __cplusplus
 }
