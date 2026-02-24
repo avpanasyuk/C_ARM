@@ -19,7 +19,7 @@ _eeprom_size  = LENGTH(EEPROM);
 */
 
 #include <stm32f3xx_hal_flash.h>
-#include "../C_General/General_C.h"
+#include "../C_General/General.h"
 #include "../C_ARM/Error.h"
 
 // Declare linker symbols
