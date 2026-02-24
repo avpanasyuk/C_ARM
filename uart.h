@@ -13,9 +13,9 @@
 #include <stm32f3xx_hal_dma.h>
 #include <stm32f3xx_hal_uart.h>
 // #include "CubeMX/Inc/usart.h"
-#include "../C_General/Error.h"
-#include "../C_General/IO.h"
-#include "../C_General/Chain.h"
+#include "../C_General/Error.hpp"
+#include "../C_General/IO.hpp"
+#include "../C_General/Chain.hpp"
 /// @endcond
 // #include "C_General/UART.h"
 // #include "err_codes.h"

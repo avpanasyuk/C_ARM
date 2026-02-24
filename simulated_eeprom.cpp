@@ -19,7 +19,8 @@ _eeprom_size  = LENGTH(EEPROM);
 */
 
 #include <stm32f3xx_hal_flash.h>
-#include "../C_General/General.h"
+#include "../C_General/General.hpp"
+#include "../C_General/MyMath.hpp"
 #include "../C_ARM/Error.h"
 
 // Declare linker symbols
@@ -55,8 +56,8 @@ void EEPROM_Write(const uint32_t *p, uint32_t Nbytes) {
   AVP_ASSERT(Nbytes % sizeof(uint32_t) == 0);
   AVP_ASSERT(Nbytes + sizeof(uint32_t) <= eeprom_size); // another DWORD for CRC
   AVP_ASSERT(HAL_FLASH_Unlock() == HAL_OK);
-  flash_erase_page((uint32_t)eeprom_start, CEIL_RATIO(Nbytes + sizeof(uint32_t), FLASH_PAGE_SIZE));
-  uint32_t CRC_val = Crc16((const uint8_t *)p, Nbytes,0);
+  flash_erase_page((uint32_t)eeprom_start, avp::CeilRatio<uint32_t>(Nbytes + sizeof(uint32_t), FLASH_PAGE_SIZE));
+  uint32_t CRC_val = avp::Crc16((const uint8_t *)p, Nbytes,0);
   uint32_t *p_eeprom = eeprom_start;
   uint32_t count = Nbytes/sizeof(uint32_t);
   while(count--) flash_write(p_eeprom++, *(p++));
@@ -74,7 +75,7 @@ void EEPROM_Write(const uint32_t *p, uint32_t Nbytes) {
 const char *EEPROM_Read(uint32_t *p, uint32_t Nbytes) {
   AVP_ASSERT(Nbytes % sizeof(uint32_t) == 0);
   AVP_ASSERT(Nbytes + sizeof(uint32_t) <= eeprom_size); // another DWORD for CRC
-  uint32_t CRC_val = Crc16((const uint8_t *)eeprom_start, Nbytes, 0);
+  uint32_t CRC_val = avp::Crc16((const uint8_t *)eeprom_start, Nbytes, 0);
   uint32_t count = Nbytes/sizeof(uint32_t);
   if(CRC_val != *(eeprom_start + count)) return "Bad CRC!";
 

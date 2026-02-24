@@ -36,7 +36,8 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 */
 #ifdef __cplusplus
 
-#include "../C_General/IO.h"
+#include "STM32F.hpp"
+#include "../C_General/IO.hpp"
 
 // extern "C" int _write(int file, char *ptr, int len);
 

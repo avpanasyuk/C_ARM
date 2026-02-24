@@ -2,8 +2,8 @@
 
 #include <stm32f3xx_hal.h>
 // #include "Error.h"
-#include "../C_General/Chain.h"
-#include "../C_General/MyMath.h"
+#include "../C_General/Chain.hpp"
+#include "../C_General/MyMath.hpp"
 #include "../C_ARM/Error.h"
 
 extern uint32_t SystemClockHz; // usually determined in setup.cpp  as HAL_RCC_GetSysClockFreq();
