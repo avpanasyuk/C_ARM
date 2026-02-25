@@ -20,16 +20,8 @@ _eeprom_start = ORIGIN(EEPROM);
 _eeprom_size  = LENGTH(EEPROM);
 */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void EEPROM_Write(const uint32_t *pDWORD, uint32_t nDWORDs);
 const char *EEPROM_Read(uint32_t *pDWORD, uint32_t nDWORDs);
-
-#ifdef __cplusplus
-}
-#endif
 
 
 
