@@ -12,13 +12,11 @@
 #include <stm32f3xx_hal.h>
 #include <stm32f3xx_hal_dma.h>
 #include <stm32f3xx_hal_uart.h>
-// #include "CubeMX/Inc/usart.h"
+/// @endcond
+
 #include "../C_General/Error.hpp"
 #include "../C_General/IO.hpp"
 #include "../C_General/Chain.hpp"
-/// @endcond
-// #include "C_General/UART.h"
-// #include "err_codes.h"
 
 namespace avp {
   typedef ChainByKey<UART_HandleTypeDef *> tUART_Chain;
@@ -69,7 +67,7 @@ namespace avp {
     } // RX_Byte_IT
 
    public:
-    static void Init(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
+    static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
       pStoreReceivedByte = pStoreReceivedByte_;
       pGetBlockToSend = pGetBlockToSend_;
       if(UART_for_Port_Chain.FindFirst(puart) == nullptr) UART_for_Port_Chain.Append(&UART_Link); // FIXME - static constructor is not called for some reason
@@ -158,7 +156,7 @@ namespace avp {
       } else return nullptr;
     } // GetError
 
-    static void FlushRX() {} // RX is interrupt driven, nothing to flush
+    static void PurgeRX() {} // RX is interrupt driven, nothing to flush
   }; // UART_for_Port
 
 

@@ -25,7 +25,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
         new data in buffer to transmit. This function may be called at the end of all primary "write"
         functions, from the interrupt indicating end of previous transfer, or from the "cycle" loop
         just in case. It should maintain locks when necessary.
-      -# should provide static void FlushRX();
+      -# should provide static void PurgeRX();
       -# should provide const char *GetError();
       -# should provide RX_Byte_IT() to restart RX if it stalled
        - static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_)
@@ -61,7 +61,7 @@ namespace avp {
     } // TryToSend
 
     static const char *GetError() { return nullptr; }
-    static void FlushRX() {};
+    static void PurgeRX() {};
     static void RX_Byte_IT() {};
     static void SetCallBacks(tStoreReceivedByte pStoreReceivedByte_,  tGetBlockToSend pGetBlockToSend_) {
       pStoreReceivedByte = pStoreReceivedByte_;
