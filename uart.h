@@ -46,7 +46,7 @@ namespace avp {
     static tGetBlockToSend pGetBlockToSend; ///< pointer to callback function which
     /// have to be specifies using Init function
     static uint8_t NewByte;
-    static bool TX_in_Progress; ///< mutex, does not allow to HAL_UART_Transmit_DMA twice
+    static volatile bool TX_in_Progress; ///< mutex, does not allow to HAL_UART_Transmit_DMA twice
     // I do not want to rely on internal HAL_UART_Transmit_DMA mutex, because we are calling
     // pGetBlockToSend and if TX is busy what are we going to do with data
     static constexpr uint8_t ERR_STR_MAX_SZ = 254;
@@ -167,7 +167,7 @@ namespace avp {
   T tStoreReceivedByte U::pStoreReceivedByte;
   T tGetBlockToSend U::pGetBlockToSend;
   T uint8_t U::NewByte;
-  T bool U::TX_in_Progress = false;
+  T volatile bool U::TX_in_Progress = false;
 // T typename U::ErrorCodes_ U::Error = NO_ERROR;
   T char U::ErrStr[];
   T bool U::InError = false;

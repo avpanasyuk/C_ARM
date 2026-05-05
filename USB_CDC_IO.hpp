@@ -50,12 +50,14 @@ namespace avp {
 
     static inline void TryToSend() {
       // FIXME: should there be a mutex for pBlockBeingSent
+      AVP_ASSERT(pGetBlockToSend != nullptr);
+      
       if(pBlockBeingSent == nullptr)
         pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
       if(pBlockBeingSent != nullptr) {
         if(CDC_Transmit_FS((uint8_t *)pBlockBeingSent, LengthOfBlockBeingSent) == USBD_OK) {
           // _write(0, (char *)pBlockBeingSent, LengthOfBlockBeingSent);
-          pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
+            pGetBlockToSend(&pBlockBeingSent, &LengthOfBlockBeingSent);
         }
       }
     } // TryToSend
