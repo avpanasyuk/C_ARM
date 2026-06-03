@@ -18,7 +18,9 @@ _eeprom_start = ORIGIN(EEPROM);
 _eeprom_size  = LENGTH(EEPROM);
 */
 
+/// @cond
 #include <stm32f3xx_hal_flash.h>
+/// @endcond
 #include "../C_General/General.hpp"
 #include "../C_General/MyMath.hpp"
 #include "../C_ARM/Error.h"

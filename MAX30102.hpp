@@ -8,9 +8,11 @@
 #ifndef INCLUDE_AVP_LIBS_ARM_HPP_
 #define INCLUDE_AVP_LIBS_ARM_HPP_
 
+/// @cond
 #include <stdint.h>
 #include <string.h>
 #include <stm32f3xx_hal_i2c.h>
+/// @endcond
 
 class MAX30102 {
 static constexpr uint16_t I2C_ADDR = 0x57;

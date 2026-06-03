@@ -1,6 +1,8 @@
 #pragma once
 
+/// @cond
 #include <stm32f3xx_hal_def.h>
+/// @endcond
 #include "../C_General/Error.h"
 
 #define AVP_HAL_ASSERT(h_ptr,exp) do{ HAL_StatusTypeDef status = (exp); if(status != HAL_OK) \

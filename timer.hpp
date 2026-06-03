@@ -1,6 +1,8 @@
 #pragma once
 
+/// @cond
 #include <stm32f3xx_hal.h>
+/// @endcond
 // #include "Error.h"
 #include "../C_General/Chain.hpp"
 #include "../C_General/MyMath.hpp"

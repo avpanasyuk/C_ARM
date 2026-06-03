@@ -1,7 +1,9 @@
 #ifndef USB_CDC_IO_HPP_INCLUDED
 #define USB_CDC_IO_HPP_INCLUDED
 
+/// @cond
 #include <usbd_cdc_if.h>
+/// @endcond
 
 
 /**
