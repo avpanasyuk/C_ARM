@@ -37,16 +37,37 @@ uint32_t *eeprom_start = &_eeprom_start;
 uint32_t eeprom_size = (uint32_t)&_eeprom_size; // the same size as FLASH page, code has to be modified if need more
 
 static void flash_erase_page(uint32_t page, uint32_t Npages) {
+#if defined(STM32F1)
+  // On the GD32F303 (an STM32F1 clone) the ST HAL's HAL_FLASHEx_Erase returns HAL_ERROR and leaves
+  // the page intact, even though the silicon erases fine (e.g. EBlink erases it). Drive the FMC
+  // erase registers directly instead - the PER/AR/STRT page-erase sequence is identical on real
+  // STM32F1/F3. HAL_FLASH_Program (below) works on the GD32, so only the erase is bypassed.
+  for(uint32_t i = 0; i < Npages; ++i) {
+    if(FLASH->CR & FLASH_CR_LOCK) { FLASH->KEYR = 0x45670123u; FLASH->KEYR = 0xCDEF89ABu; }
+    while(FLASH->SR & FLASH_SR_BSY) {}
+    FLASH->SR = FLASH_SR_EOP | FLASH_SR_PGERR | FLASH_SR_WRPRTERR; // write-1-to-clear stale flags
+    FLASH->CR |= FLASH_CR_PER;
+    FLASH->AR  = page + i * FLASH_PAGE_SIZE;
+    FLASH->CR |= FLASH_CR_STRT;
+    while(FLASH->SR & FLASH_SR_BSY) {}
+    FLASH->CR &= ~FLASH_CR_PER;
+  }
+#else
   FLASH_EraseInitTypeDef eraseInit = { FLASH_TYPEERASE_PAGES, page, Npages };
   uint32_t pageError;
   AVP_ASSERT(HAL_FLASHEx_Erase(&eraseInit, &pageError) == HAL_OK);
+#endif
+  const uint32_t *end = (const uint32_t *)(page + Npages * FLASH_PAGE_SIZE);
+  for(const uint32_t *p = (const uint32_t *)page; p < end; ++p)
+    AVP_ASSERT(*p == 0xFFFFFFFFu); // verify the page is blank (catches a genuine erase failure)
 } // erase_page
 
 /**
  * After the page is erased every DWORD can be written once only, another erase should happen before rewrite
  */
 static void flash_write(uint32_t* addr, uint32_t data) {
-  AVP_ASSERT(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)addr, data) == HAL_OK);
+  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)addr, data);
+  AVP_ASSERT(*addr == data); // verify by readback (don't trust the GD32's HAL status)
 } // flash_write
 
 /**
