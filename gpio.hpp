@@ -4,8 +4,8 @@
 /// @cond
 #include <stdint.h>
 #ifdef HAL_GPIO_LIBRARY
-#include <stm32f3xx_hal_def.h>
-#include <stm32f3xx_hal_gpio.h>
+#include "MCU_HAL.h"
+
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
 /// @endcond

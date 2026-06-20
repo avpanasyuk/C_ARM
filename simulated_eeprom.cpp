@@ -19,7 +19,7 @@ _eeprom_size  = LENGTH(EEPROM);
 */
 
 /// @cond
-#include <stm32f3xx_hal.h> // umbrella: pulls in hal_def (HAL_StatusTypeDef) before the FLASH module
+#include "MCU_HAL.h" // umbrella: pulls in hal_def (HAL_StatusTypeDef) before the FLASH module
 /// @endcond
 #include "../C_General/General.hpp"
 #include "../C_General/MyMath.hpp"
