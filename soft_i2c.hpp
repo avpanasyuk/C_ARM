@@ -37,12 +37,21 @@ namespace avp {
     }
 
    public:
+    /// Free a bus where a slave is mid-transfer holding SDA low (e.g. the master was reset/halted
+    /// mid-read): pulse SCL up to 9 times until the slave releases SDA, then issue a STOP to reset
+    /// the slave's state machine. Idempotent when the bus is already idle (SDA high).
+    static void Recover() {
+      for(uint8_t i = 0; i < 9 && !SDA::get(); ++i) { SCL::set_low(); Dly(); SCL::set_high(); Dly(); }
+      Stop();
+    }
+
     static void Init() {
       GPIO_InitTypeDef g = {}; // designated fields: F1's GPIO_InitTypeDef has no Alternate member
       g.Mode = GPIO_MODE_OUTPUT_OD; g.Pull = GPIO_PULLUP; g.Speed = GPIO_SPEED_FREQ_LOW;
       g.Pin = SDA::PinMask; HAL_GPIO_Init((GPIO_TypeDef *)SDA::Port, &g);
       g.Pin = SCL::PinMask; HAL_GPIO_Init((GPIO_TypeDef *)SCL::Port, &g);
       SDA::set_high(); SCL::set_high();
+      Recover(); // in case a slave was left holding the bus when the master last reset
     }
 
     static void Start() { SDA::set_high(); SclHigh(); Dly(); SDA::set_low(); Dly(); SCL::set_low(); Dly(); }
