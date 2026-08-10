@@ -21,6 +21,11 @@
 #  include <stm32f3xx_hal.h>
 #elif defined(STM32F4)
 #  include <stm32f4xx_hal.h>
+#elif defined(STM32WB) || \
+      defined(STM32WB55xx) || defined(STM32WB50xx) || defined(STM32WB35xx) || \
+      defined(STM32WB30xx) || defined(STM32WB15xx) || defined(STM32WB10xx) || \
+      defined(STM32WB5Mxx) || defined(STM32WB1Mxx)
+#  include <stm32wbxx_hal.h>
 #else
 #  error "C_ARM/MCU_HAL.h: unknown STM32 family - add its HAL umbrella include here"
 #endif
