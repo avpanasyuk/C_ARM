@@ -9,9 +9,9 @@
 /// @cond
 #include <stdint.h>
 #include <string.h>
-#include <stm32f3xx_hal.h>
-#include <stm32f3xx_hal_dma.h>
-#include <stm32f3xx_hal_uart.h>
+#include "MCU_HAL.h"
+
+
 /// @endcond
 
 #include "../C_General/Error.hpp"

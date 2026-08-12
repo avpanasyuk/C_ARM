@@ -1,7 +1,7 @@
 #pragma once
 
 /// @cond
-#include <stm32f3xx_hal_def.h>
+#include "MCU_HAL.h"
 /// @endcond
 #include "../C_General/Error.h"
 

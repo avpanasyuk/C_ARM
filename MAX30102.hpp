@@ -11,7 +11,7 @@
 /// @cond
 #include <stdint.h>
 #include <string.h>
-#include <stm32f3xx_hal_i2c.h>
+#include "MCU_HAL.h"
 /// @endcond
 
 class MAX30102 {

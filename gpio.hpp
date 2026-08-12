@@ -4,8 +4,8 @@
 /// @cond
 #include <stdint.h>
 #ifdef HAL_GPIO_LIBRARY
-#include <stm32f3xx_hal_def.h>
-#include <stm32f3xx_hal_gpio.h>
+#include "MCU_HAL.h"
+
 #else#include <stm32f0xx_ll_gpio.h>
 #endif
 /// @endcond
@@ -38,13 +38,21 @@ namespace avp {
   */
   template<uint32_t GPIOx, uint16_t GPIO_Pin>
   struct Pin {
+    static constexpr uint32_t Port    = GPIOx;    ///< GPIO port base address (cast to GPIO_TypeDef*)
+    static constexpr uint16_t PinMask = GPIO_Pin; ///< GPIO_PIN_x bit mask
     /*! sets PULLUP when mode is INPUT */
     /* CubeMX does it by itself */
     static void Config(uint32_t Mode = GPIO_MODE_INPUT, uint32_t Pull = GPIO_NOPULL,
-                       uint32_t Speed = GPIO_SPEED_FREQ_LOW, uint32_t Alternate = GPIO_AF15_EVENTOUT) {
-      GPIO_InitTypeDef GPIO_Init = {GPIO_Pin, Mode, Pull, Speed, Alternate};
-      HAL_GPIO_Init(GPIOx,&GPIO_Init);
-    } // Init
+                       uint32_t Speed = GPIO_SPEED_FREQ_LOW, uint32_t Alternate = 0) {
+      GPIO_InitTypeDef GPIO_Init = {};
+      GPIO_Init.Pin = GPIO_Pin; GPIO_Init.Mode = Mode; GPIO_Init.Pull = Pull; GPIO_Init.Speed = Speed;
+#if defined(GPIO_AF15_EVENTOUT) // AF-mux families (F3/F4/...) have an Alternate field; STM32F1 does not
+      GPIO_Init.Alternate = Alternate;
+#else
+      (void)Alternate;
+#endif
+      HAL_GPIO_Init((GPIO_TypeDef *)GPIOx, &GPIO_Init);
+    } // Config
     // static constexpr char *Name() { return (const char *)PortName; }
     static void set(bool value) { HAL_GPIO_WritePin((GPIO_TypeDef *)GPIOx, GPIO_Pin, value?GPIO_PIN_SET:GPIO_PIN_RESET); }
     static void set_high() { set(true); }
